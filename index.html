@@ -5,24 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>xH Stream UI</title>
   <style>
-    body, h1, h2, h3, p, a {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-
     body {
+      margin: 0;
+      font-family: Arial, sans-serif;
       background-color: #0e0e0e;
       color: #fff;
       display: flex;
     }
-
     .wrapper {
       display: flex;
       width: 100%;
       height: 100vh;
     }
-
     .sidebar {
       width: 220px;
       background-color: #1a1a1a;
@@ -32,12 +26,10 @@
       flex-direction: column;
       align-items: center;
     }
-
     .sidebar img.logo {
       width: 100px;
       margin-bottom: 20px;
     }
-
     .sidebar nav a {
       display: block;
       color: #ccc;
@@ -46,36 +38,27 @@
       text-align: center;
       transition: 0.3s;
     }
-
     .sidebar nav a:hover {
       color: #ff4747;
     }
-
-    .topbar {
-      background-color: #1f1f1f;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .topbar input[type="text"] {
-      padding: 8px;
-      width: 250px;
-      border: none;
-      border-radius: 5px;
-    }
-
-    .topbar input[type="file"] {
-      color: #fff;
-    }
-
     .main-content {
       flex: 1;
       display: flex;
       flex-direction: column;
     }
-
+    .topbar {
+      background-color: #1f1f1f;
+      padding: 10px 20px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .topbar input[type="text"] {
+      padding: 8px;
+      width: 200px;
+      border-radius: 5px;
+      border: none;
+    }
     .video-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -83,33 +66,28 @@
       gap: 20px;
       overflow-y: scroll;
     }
-
     .video-card {
       background-color: #222;
       border-radius: 10px;
       overflow: hidden;
       transition: 0.2s;
     }
-
     .video-card:hover {
       transform: scale(1.03);
     }
-
-    .video-card img, .video-card video {
+    .video-card img,
+    .video-card video {
       width: 100%;
       height: 160px;
       object-fit: cover;
     }
-
     .video-card .info {
       padding: 10px;
     }
-
     .video-card h4 {
       margin-bottom: 6px;
       font-size: 16px;
     }
-
     .video-card p {
       font-size: 14px;
       color: #999;
@@ -118,7 +96,6 @@
 </head>
 <body>
   <div class="wrapper">
-    <!-- Sidebar -->
     <aside class="sidebar">
       <img src="OIP.jpeg" alt="xH Logo" class="logo" />
       <nav>
@@ -126,26 +103,24 @@
         <a href="#">Categories</a>
         <a href="#">Trending</a>
         <a href="#">Subscriptions</a>
-        <a href="#">Library</a>
       </nav>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <!-- Topbar with Search and Upload -->
       <header class="topbar">
-        <input type="text" placeholder="Search videos..." />
-        <input type="file" id="upload" accept="image/*,video/*" />
+        <input type="text" id="search" placeholder="Search by name..."/>
+        <input type="file" id="upload" accept="image/*,video/*"/>
+        <input type="text" id="fileTitle" placeholder="Enter name (e.g. Saksham)" />
+        <button onclick="handleUpload()">Upload</button>
       </header>
 
-      <!-- Video Grid -->
       <section class="video-grid" id="videoGrid">
-        <!-- Preloaded card -->
-        <div class="video-card">
+        <!-- Example Card -->
+        <div class="video-card" data-title="demo">
           <img src="https://placehold.co/300x160" alt="Video Thumbnail" />
           <div class="info">
-            <h4>Big Brain Coding</h4>
-            <p>1.2M views • 3 days ago</p>
+            <h4>Demo Video</h4>
+            <p>1M views • 1 day ago</p>
           </div>
         </div>
       </section>
@@ -154,25 +129,34 @@
 
   <script>
     const uploadInput = document.getElementById("upload");
+    const titleInput = document.getElementById("fileTitle");
+    const searchInput = document.getElementById("search");
     const videoGrid = document.getElementById("videoGrid");
 
-    uploadInput.addEventListener("change", function () {
-      const file = this.files[0];
-      const card = document.createElement("div");
-      card.classList.add("video-card");
+    function handleUpload() {
+      const file = uploadInput.files[0];
+      const title = titleInput.value.trim();
+
+      if (!file || !title) {
+        alert("Select a file and enter a title!");
+        return;
+      }
 
       const fileType = file.type;
       const reader = new FileReader();
 
       reader.onload = function (e) {
+        const card = document.createElement("div");
+        card.classList.add("video-card");
+        card.setAttribute("data-title", title.toLowerCase());
+
         if (fileType.startsWith("image")) {
           card.innerHTML = `
-            <img src="${e.target.result}" alt="User Content">
+            <img src="${e.target.result}" alt="${title}">
             <div class="info">
-              <h4>${file.name}</h4>
-              <p>Just Now • Uploaded</p>
-            </div>
-          `;
+              <h4>${title}</h4>
+              <p>Uploaded just now</p>
+            </div>`;
         } else if (fileType.startsWith("video")) {
           card.innerHTML = `
             <video controls>
@@ -180,18 +164,31 @@
               Your browser does not support the video tag.
             </video>
             <div class="info">
-              <h4>${file.name}</h4>
-              <p>Just Now • Uploaded</p>
-            </div>
-          `;
-        } else {
-          alert("Unsupported file type!");
-          return;
+              <h4>${title}</h4>
+              <p>Uploaded just now</p>
+            </div>`;
         }
+
         videoGrid.prepend(card);
+        titleInput.value = "";
+        uploadInput.value = "";
       };
 
       reader.readAsDataURL(file);
+    }
+
+    searchInput.addEventListener("input", function () {
+      const searchVal = this.value.trim().toLowerCase();
+      const cards = document.querySelectorAll(".video-card");
+
+      cards.forEach(card => {
+        const title = card.getAttribute("data-title");
+        if (title.includes(searchVal)) {
+          card.style.display = "";
+        } else {
+          card.style.display = "none";
+        }
+      });
     });
   </script>
 </body>
