@@ -1,0 +1,104 @@
+/* Reset and base */
+body, h1, h2, h3, p, a {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #0e0e0e;
+  color: #fff;
+  display: flex;
+}
+
+/* Layout wrapper */
+.wrapper {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background-color: #1a1a1a;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+}
+
+.logo {
+  color: #ff4747;
+  margin-bottom: 30px;
+}
+
+.sidebar nav a {
+  display: block;
+  color: #ccc;
+  padding: 10px 0;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.sidebar nav a:hover {
+  color: #ff4747;
+}
+
+/* Topbar */
+.topbar {
+  background-color: #1f1f1f;
+  padding: 15px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.topbar input {
+  padding: 8px;
+  width: 250px;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  padding: 20px;
+  gap: 20px;
+}
+
+.video-card {
+  background-color: #222;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: 0.2s;
+}
+
+.video-card:hover {
+  transform: scale(1.03);
+}
+
+.video-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.video-card .info {
+  padding: 10px;
+}
+
+.video-card h4 {
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+.video-card p {
+  font-size: 14px;
+  color: #999;
+}
